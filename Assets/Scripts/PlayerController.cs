@@ -32,7 +32,10 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        curSpeed = run.isRunning ? run.runSpeed : walk.walkSpeed;
+        Jump();
         Look();
+        CheckGround();
     }
 
     // walk and running
@@ -42,15 +45,35 @@ public class PlayerController : MonoBehaviour
         rb.velocity = transform.rotation * new Vector3(movementVelocity.x, rb.velocity.y, movementVelocity.y);
     }
 
+    // jump
+    void Jump()
+    {
+        if(!jump.canJump || !jump.isGrounded)
+            return;
+
+        if(Input.GetKeyDown(jump.jumpKey))
+        {
+            rb.AddForce(Vector3.up*jump.jumpForce*100, ForceMode.Force);
+        }
+    }
+
+    // ground check
+    void CheckGround()
+    {
+        RaycastHit hit;
+        Ray ray = new Ray(jump.groundChecker.position, Vector3.down);
+        jump.isGrounded = Physics.Raycast(ray, out hit, 0.1f, jump.groundLayer) ? true : false;
+    }
+
     // camera stuff
     void Look()
     {
         Vector2 mouse = new Vector2(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y"));
         Vector2 rawVC = Vector2.Scale(mouse, Vector2.one * pCamera.sensitivity);
-        vC = Vector2.Lerp(vC, rawVC, 1 / pCamera.smooth);
+        vC = Vector2.Lerp(vC, rawVC, 1 / pCamera.smoothness);
         v += vC;
-        v.y = Mathf.Clamp(v.y, -90, 90);
-        transform.localRotation = Quaternion.AngleAxis(-v.y, Vector3.right);
+        v.y = Mathf.Clamp(v.y, -pCamera.maxMinRotationY, pCamera.maxMinRotationY);
+        pCamera.cam.transform.localRotation = Quaternion.AngleAxis(-v.y, Vector3.right);
         this.transform.localRotation = Quaternion.AngleAxis(v.x, Vector3.up);
     }
 }

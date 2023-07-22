@@ -6,7 +6,6 @@ using UnityEngine;
 public class Walk 
 {
     public bool canWalk=true;
-    bool isWalking=false;
     public float walkSpeed=4.5f;
     public float walkFOVChange=60f;
 }

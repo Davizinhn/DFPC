@@ -7,6 +7,7 @@ public class CameraControl
 {
     public bool cameraControl = true;
     public float sensitivity = 2f;
-    public float smooth = 1.5f;
+    public float smoothness = 1.5f;
+    public int maxMinRotationY = 85;
     public Camera cam;
 }

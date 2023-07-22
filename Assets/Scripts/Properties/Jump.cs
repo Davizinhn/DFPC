@@ -6,6 +6,9 @@ using UnityEngine;
 public class Jump
 {
     public bool canJump=true;
-    bool isGrounded=false;
     public float jumpForce=2f;
+    public KeyCode jumpKey = KeyCode.Space;
+    public bool isGrounded=false;
+    public LayerMask groundLayer;
+    public Transform groundChecker;
 }

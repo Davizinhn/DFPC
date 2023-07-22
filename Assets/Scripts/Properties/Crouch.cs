@@ -9,4 +9,5 @@ public class Crouch
     bool isCrouched=false;
     public float crouchSpeed=2.5f;
     public float crouchY;
+    public KeyCode crouchKey = KeyCode.LeftControl;
 }
