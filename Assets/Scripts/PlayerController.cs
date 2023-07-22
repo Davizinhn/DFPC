@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         Movement();
+        pCamera.cam.fieldOfView = Mathf.Lerp(pCamera.cam.fieldOfView, run.isRunning ? run.runFOV : walk.walkFOV, pCamera.fovChangeLerp);
     }
 
     void Update()
@@ -42,8 +43,9 @@ public class PlayerController : MonoBehaviour
     void Movement()
     {
         Vector2 movementVelocity = Vector2.ClampMagnitude(new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")), 1f) * curSpeed;
+        walk.isWalking = movementVelocity != new Vector2(0, 0);
         rb.velocity = transform.rotation * new Vector3(movementVelocity.x, rb.velocity.y, movementVelocity.y); 
-        run.isRunning = run.canRun && Input.GetKey(run.runKey) ? true : false;
+        run.isRunning = walk.isWalking && run.canRun && Input.GetKey(run.runKey) ? true : false;
     }
 
     // jump

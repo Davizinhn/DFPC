@@ -422,16 +422,17 @@ MonoBehaviour:
     sensitivity: 2
     smoothness: 1.5
     maxMinRotationY: 85
+    fovChangeLerp: 0.1
     cam: {fileID: 963194227}
   walk:
     canWalk: 1
     walkSpeed: 3.5
-    walkFOVChange: 60
+    walkFOV: 60
   run:
     canRun: 1
     isRunning: 0
     runSpeed: 5.5
-    runFOVChange: 70
+    runFOV: 75
     runKey: 304
   jump:
     canJump: 1
