@@ -425,12 +425,12 @@ MonoBehaviour:
     cam: {fileID: 963194227}
   walk:
     canWalk: 1
-    walkSpeed: 5.5
+    walkSpeed: 3.5
     walkFOVChange: 60
   run:
     canRun: 1
     isRunning: 0
-    runSpeed: 6.5
+    runSpeed: 5.5
     runFOVChange: 70
     runKey: 304
   jump:

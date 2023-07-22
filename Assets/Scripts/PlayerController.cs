@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour
     {
         Vector2 movementVelocity = Vector2.ClampMagnitude(new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")), 1f) * curSpeed;
         rb.velocity = transform.rotation * new Vector3(movementVelocity.x, rb.velocity.y, movementVelocity.y); 
+        run.isRunning = run.canRun && Input.GetKey(run.runKey) ? true : false;
     }
 
     // jump

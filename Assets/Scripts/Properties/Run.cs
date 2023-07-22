@@ -8,6 +8,6 @@ public class Run
     public bool canRun=true;
     public bool isRunning=false;
     public float runSpeed=6f;
-    public float runFOVChange=70f;
+    public float runFOV=70f;
     public KeyCode runKey = KeyCode.LeftShift;
 }
