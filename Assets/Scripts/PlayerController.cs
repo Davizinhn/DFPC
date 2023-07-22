@@ -33,8 +33,16 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        curSpeed = run.isRunning ? run.runSpeed : walk.walkSpeed;
+        if(!crouch.isCrouched){
+            crouch.canCrouch = !run.isRunning && jump.isGrounded && crouch.crouchEnabled;
+            curSpeed = run.isRunning ? run.runSpeed : walk.walkSpeed;
+        } else {
+            crouch.canCrouch = !run.isRunning && crouch.crouchEnabled;
+            curSpeed = crouch.crouchSpeed;
+        }
+        crouch.isCrouched = Input.GetKey(crouch.crouchKey) && crouch.canCrouch;
         Jump();
+        Crouch();
         Look();
         CheckGround();
     }
@@ -45,13 +53,27 @@ public class PlayerController : MonoBehaviour
         Vector2 movementVelocity = Vector2.ClampMagnitude(new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")), 1f) * curSpeed;
         walk.isWalking = movementVelocity != new Vector2(0, 0);
         rb.velocity = transform.rotation * new Vector3(movementVelocity.x, rb.velocity.y, movementVelocity.y); 
-        run.isRunning = walk.isWalking && run.canRun && Input.GetKey(run.runKey) ? true : false;
+        run.isRunning = !crouch.isCrouched && walk.isWalking && run.canRun && Input.GetKey(run.runKey) ? true : false;
+    }
+
+    // crouching
+    void Crouch()
+    {
+        if(crouch.isCrouched && transform.localScale.y!=0.75f)
+        {
+            transform.localScale = new Vector3(transform.localScale.x, 0.75f, transform.localScale.z);
+            transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y-0.25f, transform.localPosition.z);
+        }
+        else if(!crouch.isCrouched && transform.localScale.y!=1f)
+        {
+            transform.localScale = new Vector3(transform.localScale.x, 1f, transform.localScale.z);
+        }
     }
 
     // jump
     void Jump()
     {
-        if(!jump.canJump || !jump.isGrounded)
+        if(!jump.canJump || !jump.isGrounded || crouch.isCrouched)
             return;
 
         if(Input.GetKeyDown(jump.jumpKey))

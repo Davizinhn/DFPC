@@ -5,9 +5,9 @@ using UnityEngine;
 [System.Serializable]
 public class Crouch
 {
+    public bool crouchEnabled = true;
     public bool canCrouch=true;
-    bool isCrouched=false;
+    public bool isCrouched=false;
     public float crouchSpeed=2.5f;
-    public float crouchY;
     public KeyCode crouchKey = KeyCode.LeftControl;
 }

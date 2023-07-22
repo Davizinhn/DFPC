@@ -395,7 +395,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 351916104}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.99, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -428,6 +428,7 @@ MonoBehaviour:
     canWalk: 1
     walkSpeed: 3.5
     walkFOV: 60
+    isWalking: 0
   run:
     canRun: 1
     isRunning: 0
@@ -444,9 +445,10 @@ MonoBehaviour:
       m_Bits: 8
     groundChecker: {fileID: 701805168}
   crouch:
+    crouchEnabled: 1
     canCrouch: 1
-    crouchSpeed: 2.5
-    crouchY: 0
+    isCrouched: 0
+    crouchSpeed: 1.5
     crouchKey: 306
 --- !u!54 &351916110
 Rigidbody:
@@ -712,7 +714,7 @@ GameObject:
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
   m_Layer: 0
-  m_Name: Main Camera
+  m_Name: PlayerCamera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
