@@ -41,8 +41,8 @@ public class PlayerController : MonoBehaviour
     // walk and running
     void Movement()
     {
-        Vector2 movementVelocity = new Vector2(Input.GetAxis("Horizontal") * curSpeed, Input.GetAxis("Vertical") * curSpeed);
-        rb.velocity = transform.rotation * new Vector3(movementVelocity.x, rb.velocity.y, movementVelocity.y);
+        Vector2 movementVelocity = Vector2.ClampMagnitude(new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")), 1f) * curSpeed;
+        rb.velocity = transform.rotation * new Vector3(movementVelocity.x, rb.velocity.y, movementVelocity.y); 
     }
 
     // jump
