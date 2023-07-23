@@ -11,5 +11,5 @@ public class Jump
     public KeyCode jumpKey = KeyCode.Space;
     public bool isGrounded=false;
     public LayerMask groundLayer;
-    public Transform groundChecker;
+    public Transform[] groundChecker;
 }

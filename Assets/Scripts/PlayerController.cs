@@ -70,12 +70,13 @@ public class PlayerController : MonoBehaviour
         }
         if(!crouch.isCrouched)
         {
-        soundEffects.walkAndrun.pitch = run.isRunning ? 1.2f : 1f;
+            soundEffects.walkAndrun.pitch = run.isRunning ? 1.2f : 1f;
         }
         else
         {
-        soundEffects.walkAndrun.pitch = 0.85f;
+            soundEffects.walkAndrun.pitch = 0.85f;
         }
+
         Vector2 movementVelocity = Vector2.ClampMagnitude(new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")), 1f) * curSpeed;
         walk.isWalking = movementVelocity != new Vector2(0, 0);
         rb.velocity = transform.rotation * new Vector3(movementVelocity.x, rb.velocity.y, movementVelocity.y); 
@@ -116,8 +117,12 @@ public class PlayerController : MonoBehaviour
     void CheckGround()
     {
         RaycastHit hit;
-        Ray ray = new Ray(jump.groundChecker.position, Vector3.down);
-        jump.isGrounded = Physics.Raycast(ray, out hit, 0.1f, jump.groundLayer) ? true : false;
+        foreach(Transform g in jump.groundChecker)
+        {
+            Ray ray = new Ray(g.position, Vector3.down);
+            if(Physics.Raycast(ray, out hit, 0.1f, jump.groundLayer)){jump.isGrounded=true; break;}
+            else{jump.isGrounded=false;}
+        }
         if(!jump.isGrounded && alreadydid){alreadydid=false;}
         if(!alreadydid && jump.isGrounded && !soundEffects.jumpS.isPlaying)
         {
