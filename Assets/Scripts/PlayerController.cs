@@ -11,12 +11,14 @@ public class PlayerController : MonoBehaviour
     public Run run;
     public Jump jump;
     public Crouch crouch;
+    public SoundEffects soundEffects;
     
     // real stuff
     Rigidbody rb;
     float curSpeed;
     Vector2 v;
     Vector2 vC;
+    bool alreadydid = true;
 
     void Start()
     {
@@ -28,6 +30,7 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         Movement();
+        rb.AddForce(Physics.gravity * jump.gravityScale, ForceMode.Force);
         pCamera.cam.fieldOfView = Mathf.Lerp(pCamera.cam.fieldOfView, run.isRunning ? run.runFOV : walk.walkFOV, pCamera.fovChangeLerp);
     }
 
@@ -50,6 +53,19 @@ public class PlayerController : MonoBehaviour
     // walk and running
     void Movement()
     {
+        if(walk.isWalking && !soundEffects.walkAndrun.isPlaying && jump.isGrounded)
+        {
+            soundEffects.walkAndrun.Play();
+        }
+        else if(!walk.isWalking && soundEffects.walkAndrun.isPlaying)
+        {
+            soundEffects.walkAndrun.Stop();
+        }
+        else if(soundEffects.walkAndrun.isPlaying && !jump.isGrounded)
+        {
+            soundEffects.walkAndrun.Stop();
+        }
+        soundEffects.walkAndrun.pitch = run.isRunning ? 1.2f : 1f;
         Vector2 movementVelocity = Vector2.ClampMagnitude(new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")), 1f) * curSpeed;
         walk.isWalking = movementVelocity != new Vector2(0, 0);
         rb.velocity = transform.rotation * new Vector3(movementVelocity.x, rb.velocity.y, movementVelocity.y); 
@@ -61,11 +77,13 @@ public class PlayerController : MonoBehaviour
     {
         if(crouch.isCrouched && transform.localScale.y!=0.75f)
         {
+            soundEffects.crouchS.PlayOneShot(soundEffects.crouch[Random.Range(0, soundEffects.crouch.Length-1)]);
             transform.localScale = new Vector3(transform.localScale.x, 0.75f, transform.localScale.z);
             transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y-0.25f, transform.localPosition.z);
         }
         else if(!crouch.isCrouched && transform.localScale.y!=1f)
         {
+            soundEffects.LcrouchS.PlayOneShot(soundEffects.Lcrouch[Random.Range(0, soundEffects.Lcrouch.Length-1)]);
             transform.localScale = new Vector3(transform.localScale.x, 1f, transform.localScale.z);
         }
     }
@@ -79,6 +97,8 @@ public class PlayerController : MonoBehaviour
         if(Input.GetKeyDown(jump.jumpKey))
         {
             rb.AddForce(Vector3.up*jump.jumpForce*100, ForceMode.Force);
+            soundEffects.jumpS.PlayOneShot(soundEffects.jump[Random.Range(0, soundEffects.jump.Length-1)]);
+            alreadydid=false;
         }
     }
 
@@ -88,6 +108,11 @@ public class PlayerController : MonoBehaviour
         RaycastHit hit;
         Ray ray = new Ray(jump.groundChecker.position, Vector3.down);
         jump.isGrounded = Physics.Raycast(ray, out hit, 0.1f, jump.groundLayer) ? true : false;
+        if(!alreadydid && jump.isGrounded && !soundEffects.jumpS.isPlaying)
+        {
+            alreadydid=true;
+            soundEffects.landS.PlayOneShot(soundEffects.land[Random.Range(0, soundEffects.land.Length-1)]);
+        }
     }
 
     // camera stuff
