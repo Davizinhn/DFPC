@@ -19,6 +19,8 @@ public class PlayerController : MonoBehaviour
     Vector2 v;
     Vector2 vC;
     bool alreadydid = true;
+    float timer = 0.0f;
+    float midpoint = 0.61f;
 
     void Start()
     {
@@ -30,6 +32,7 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         Movement();
+        Headbobbing();
         rb.AddForce(Physics.gravity * jump.gravityScale, ForceMode.Force);
         pCamera.cam.fieldOfView = Mathf.Lerp(pCamera.cam.fieldOfView, run.isRunning ? run.runFOV : walk.walkFOV, pCamera.fovChangeLerp);
     }
@@ -108,6 +111,7 @@ public class PlayerController : MonoBehaviour
         RaycastHit hit;
         Ray ray = new Ray(jump.groundChecker.position, Vector3.down);
         jump.isGrounded = Physics.Raycast(ray, out hit, 0.1f, jump.groundLayer) ? true : false;
+        if(!jump.isGrounded && alreadydid){alreadydid=false;}
         if(!alreadydid && jump.isGrounded && !soundEffects.jumpS.isPlaying)
         {
             alreadydid=true;
@@ -125,5 +129,55 @@ public class PlayerController : MonoBehaviour
         v.y = Mathf.Clamp(v.y, -pCamera.maxMinRotationY, pCamera.maxMinRotationY);
         pCamera.cam.transform.localRotation = Quaternion.AngleAxis(-v.y, Vector3.right);
         this.transform.localRotation = Quaternion.AngleAxis(v.x, Vector3.up);
+    }
+
+    // headbobbing
+    void Headbobbing()
+    {
+        float waveslice = 0.0f;
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
+        GameObject camera = pCamera.cam.gameObject;
+
+        if(walk.isWalking && pCamera.headbobbing && jump.isGrounded)
+        {        
+            if (Mathf.Abs(horizontal) == 0 && Mathf.Abs(vertical) == 0)
+            {
+                timer = 0.0f;
+            }
+            else
+            {
+                waveslice = Mathf.Sin(timer);
+                timer += run.isRunning?pCamera.bobRunIntensity:pCamera.bobWalkIntensity;
+                if (timer > Mathf.PI * 2)
+                {
+                    timer = timer - (Mathf.PI * 2);
+                }
+            }
+            if (waveslice != 0)
+            {
+                float translateChange = waveslice * pCamera.bobAmount;
+                float totalAxes = Mathf.Abs(horizontal) + Mathf.Abs(vertical);
+                totalAxes = Mathf.Clamp(totalAxes, 0.0f, 1.0f);
+                translateChange = totalAxes * translateChange;
+                Vector3 localPosition = camera.transform.localPosition;
+                localPosition.y = midpoint + translateChange;
+                camera.transform.localPosition = localPosition;
+            }
+            else
+            {
+                Vector3 localPosition = camera.transform.localPosition;
+                localPosition.y = midpoint;
+                camera.transform.localPosition = localPosition;
+            }
+
+        }
+        else
+        {
+            Vector3 localPosition = camera.transform.localPosition;
+            localPosition.y = midpoint;
+            camera.transform.localPosition = localPosition;
+        }
+
     }
 }

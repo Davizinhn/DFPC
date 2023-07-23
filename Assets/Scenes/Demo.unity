@@ -716,6 +716,10 @@ MonoBehaviour:
     smoothness: 1.5
     maxMinRotationY: 85
     fovChangeLerp: 0.1
+    headbobbing: 1
+    bobAmount: 0.035
+    bobWalkIntensity: 0.29
+    bobRunIntensity: 0.34
     cam: {fileID: 963194227}
   walk:
     canWalk: 1
@@ -917,7 +921,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 701805167}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.993, z: 0}
+  m_LocalPosition: {x: 0, y: -0.99, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
