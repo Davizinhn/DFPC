@@ -68,7 +68,14 @@ public class PlayerController : MonoBehaviour
         {
             soundEffects.walkAndrun.Stop();
         }
+        if(!crouch.isCrouched)
+        {
         soundEffects.walkAndrun.pitch = run.isRunning ? 1.2f : 1f;
+        }
+        else
+        {
+        soundEffects.walkAndrun.pitch = 0.85f;
+        }
         Vector2 movementVelocity = Vector2.ClampMagnitude(new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")), 1f) * curSpeed;
         walk.isWalking = movementVelocity != new Vector2(0, 0);
         rb.velocity = transform.rotation * new Vector3(movementVelocity.x, rb.velocity.y, movementVelocity.y); 
@@ -148,7 +155,13 @@ public class PlayerController : MonoBehaviour
             else
             {
                 waveslice = Mathf.Sin(timer);
+                if(!crouch.isCrouched){
                 timer += run.isRunning?pCamera.bobRunIntensity:pCamera.bobWalkIntensity;
+                }
+                else
+                {
+                timer += pCamera.bobCrouchIntensity;
+                }
                 if (timer > Mathf.PI * 2)
                 {
                     timer = timer - (Mathf.PI * 2);

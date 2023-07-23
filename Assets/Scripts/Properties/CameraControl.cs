@@ -14,5 +14,6 @@ public class CameraControl
     public float bobAmount = 1f;
     public float bobWalkIntensity = 1f;
     public float bobRunIntensity = 1f;
+    public float bobCrouchIntensity = 1f;
     public Camera cam;
 }
