@@ -20,7 +20,6 @@ public class PlayerController : MonoBehaviour
     Vector2 vC;
     bool alreadydid = true;
     float timer = 0.0f;
-    float midpoint = 0.61f;
 
     void Start()
     {
@@ -77,10 +76,12 @@ public class PlayerController : MonoBehaviour
             soundEffects.walkAndrun.pitch = 0.85f;
         }
 
-        Vector2 movementVelocity = Vector2.ClampMagnitude(new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")), 1f) * curSpeed;
-        walk.isWalking = movementVelocity != new Vector2(0, 0);
-        rb.velocity = transform.rotation * new Vector3(movementVelocity.x, rb.velocity.y, movementVelocity.y); 
         run.isRunning = !crouch.isCrouched && walk.isWalking && run.canRun && Input.GetKey(run.runKey) ? true : false;
+        if(!walk.canWalk)
+            return;
+        Vector2 movementVelocity = Vector2.ClampMagnitude(new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")), 1f) * curSpeed;
+        walk.isWalking = movementVelocity != new Vector2(0, 0) && rb.velocity!= new Vector3(0, 0, 0);
+        rb.velocity = transform.rotation * new Vector3(movementVelocity.x, rb.velocity.y, movementVelocity.y); 
     }
 
     // crouching
@@ -134,6 +135,8 @@ public class PlayerController : MonoBehaviour
     // camera stuff
     void Look()
     {
+        if(!pCamera.cameraControl)
+            return;
         Vector2 mouse = new Vector2(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y"));
         Vector2 rawVC = Vector2.Scale(mouse, Vector2.one * pCamera.sensitivity);
         vC = Vector2.Lerp(vC, rawVC, 1 / pCamera.smoothness);
@@ -179,13 +182,13 @@ public class PlayerController : MonoBehaviour
                 totalAxes = Mathf.Clamp(totalAxes, 0.0f, 1.0f);
                 translateChange = totalAxes * translateChange;
                 Vector3 localPosition = camera.transform.localPosition;
-                localPosition.y = midpoint + translateChange;
+                localPosition.y = pCamera.bobMidpoint + translateChange;
                 camera.transform.localPosition = localPosition;
             }
             else
             {
                 Vector3 localPosition = camera.transform.localPosition;
-                localPosition.y = midpoint;
+                localPosition.y = pCamera.bobMidpoint;
                 camera.transform.localPosition = localPosition;
             }
 
@@ -193,7 +196,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             Vector3 localPosition = camera.transform.localPosition;
-            localPosition.y = midpoint;
+            localPosition.y = pCamera.bobMidpoint;
             camera.transform.localPosition = localPosition;
         }
 
