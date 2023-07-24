@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
     Vector2 vC;
     bool alreadydid = true;
     float timer = 0.0f;
+    float midpoint = 0.61f;
 
     void Start()
     {
@@ -77,8 +78,8 @@ public class PlayerController : MonoBehaviour
         }
 
         Vector2 movementVelocity = Vector2.ClampMagnitude(new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")), 1f) * curSpeed;
-        walk.isWalking = movementVelocity != new Vector2(0, 0) && rb.velocity!= new Vector3(0, 0, 0);
-        rb.velocity = transform.rotation * new Vector3(movementVelocity.normalized.x, rb.velocity.y, movementVelocity.normalized.y); 
+        walk.isWalking = movementVelocity != new Vector2(0, 0);
+        rb.velocity = transform.rotation * new Vector3(movementVelocity.x, rb.velocity.y, movementVelocity.y); 
         run.isRunning = !crouch.isCrouched && walk.isWalking && run.canRun && Input.GetKey(run.runKey) ? true : false;
     }
 
@@ -178,13 +179,13 @@ public class PlayerController : MonoBehaviour
                 totalAxes = Mathf.Clamp(totalAxes, 0.0f, 1.0f);
                 translateChange = totalAxes * translateChange;
                 Vector3 localPosition = camera.transform.localPosition;
-                localPosition.y = pCamera.bobMidpoint + translateChange;
+                localPosition.y = midpoint + translateChange;
                 camera.transform.localPosition = localPosition;
             }
             else
             {
                 Vector3 localPosition = camera.transform.localPosition;
-                localPosition.y = pCamera.bobMidpoint;
+                localPosition.y = midpoint;
                 camera.transform.localPosition = localPosition;
             }
 
@@ -192,7 +193,7 @@ public class PlayerController : MonoBehaviour
         else
         {
             Vector3 localPosition = camera.transform.localPosition;
-            localPosition.y = pCamera.bobMidpoint;
+            localPosition.y = midpoint;
             camera.transform.localPosition = localPosition;
         }
 
